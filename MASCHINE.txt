@@ -2,6 +2,9 @@
 # skripte/maschine.py holen; die Liste selbst und das Werkzeug gehören dazu.
 MASCHINE.txt
 skripte/maschine.py
+# Grundgestaltung (vom Seitenrahmen geladen)
+atlas.css
+favicon.svg
 # Laufzeit (Seiten, Karte, Sprachen)
 i18n.js
 rahmen.js
