@@ -25,6 +25,7 @@ WURZEL = Path(__file__).resolve().parent.parent
 SRS_NAMEN = {
     2178: "ETRS89 / Poland CS2000 zone 7",
     2180: "ETRS89 / Poland CS92",
+    25832: "ETRS89 / UTM zone 32N",
     25833: "ETRS89 / UTM zone 33N",
     25834: "ETRS89 / UTM zone 34N",
 }
