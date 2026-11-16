@@ -1,0 +1,7 @@
+Kiezatlas-Maschine
+Copyright 2026 Stiebitz Souverain Systems UG (haftungsbeschränkt), Potsdam
+
+Lizenziert unter der Apache License, Version 2.0 (siehe LICENSE).
+Herausgelöst aus dem Kiezatlas Kraków (https://github.com/andremadstop/kiezatlas-krakow, Commit e7c85ca13f7e).
+Fremdbestandteile (MapLibre GL JS, Schriften) gehören nicht zur Maschine; jede Stadt bringt sie mit und nennt sie
+in ihrem eigenen NOTICE. Code und Texte entstanden mit KI-Unterstützung (Claude).
