@@ -2,7 +2,8 @@
 # skripte/maschine.py holen; die Liste selbst und das Werkzeug gehören dazu.
 MASCHINE.txt
 skripte/maschine.py
-# Grundgestaltung (vom Seitenrahmen geladen)
+# Grundgestaltung (vom Seitenrahmen geladen) und Seitenstile der Kartenblatt-Erzählung (stile: atlas.css)
+basis.css
 atlas.css
 favicon.svg
 # Laufzeit (Seiten, Karte, Sprachen)
