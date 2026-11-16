@@ -32,8 +32,12 @@ SRS_NAMEN = {
 
 
 def pfad() -> Path:
+    """$KIEZ_CONFIG, sonst die einzige Ortskonfiguration unter config/ (ohne richtwerte.yaml), sonst config/krakow.yaml."""
     p = os.environ.get("KIEZ_CONFIG")
-    return Path(p).resolve() if p else WURZEL / "config" / "krakow.yaml"
+    if p:
+        return Path(p).resolve()
+    orte = sorted(x for x in (WURZEL / "config").glob("*.yaml") if x.name != "richtwerte.yaml")
+    return orte[0] if len(orte) == 1 else WURZEL / "config" / "krakow.yaml"
 
 
 @lru_cache(maxsize=None)
