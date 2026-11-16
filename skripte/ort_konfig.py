@@ -1,6 +1,6 @@
 """Ortskonfiguration für Skripte: liest config/<ort>.yaml und stellt das Rechen-Koordinatensystem bereit.
 
-Welche Datei gilt: $KIEZ_CONFIG (Pfad), sonst config/krakow.yaml. Für die Gegenprobe Potsdam zeigt
+Welche Datei gilt: $KIEZ_CONFIG (Pfad), sonst die einzige Ortskonfiguration unter config/, sonst config/krakow.yaml. Für die Gegenprobe Potsdam zeigt
 KIEZ_CONFIG auf pruefen/gegenprobe_potsdam/ort.yaml.
 
   RECHEN_SRID   EPSG-Code, in dem Abstände und Flächen gerechnet werden (Schlüssel rechen_srid)
