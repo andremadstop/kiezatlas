@@ -1,6 +1,8 @@
 """Ortskonfiguration für Skripte: liest config/<ort>.yaml und stellt das Rechen-Koordinatensystem bereit.
 
-Welche Datei gilt: $KIEZ_CONFIG (Pfad), sonst die einzige Ortskonfiguration unter config/, sonst config/krakow.yaml. Für die Gegenprobe Potsdam zeigt
+Welche Datei gilt: $KIEZ_CONFIG (Pfad), sonst die einzige Datei config/*.yaml mit dem Schlüssel `ort` auf oberster
+Ebene. Andere YAML-Dateien unter config/ (Richtwerte, Konfiguration einer Import-Pipeline) zählen nicht. Gibt es
+keine oder mehrere solche Dateien, bricht das Skript mit der Liste ab, statt zu raten. Für die Gegenprobe Potsdam zeigt
 KIEZ_CONFIG auf pruefen/gegenprobe_potsdam/ort.yaml.
 
   RECHEN_SRID   EPSG-Code, in dem Abstände und Flächen gerechnet werden (Schlüssel rechen_srid)
@@ -31,13 +33,25 @@ SRS_NAMEN = {
 }
 
 
+def _ist_ort(datei: Path) -> bool:
+    try:
+        k = yaml.safe_load(datei.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, yaml.YAMLError) as e:
+        raise SystemExit(f"{datei}: nicht lesbar ({type(e).__name__})") from e
+    return isinstance(k, dict) and "ort" in k
+
+
 def pfad() -> Path:
-    """$KIEZ_CONFIG, sonst die einzige Ortskonfiguration unter config/ (ohne richtwerte.yaml), sonst config/krakow.yaml."""
+    """$KIEZ_CONFIG, sonst die einzige Datei config/*.yaml mit Schlüssel `ort`; keine oder mehrere: Abbruch."""
     p = os.environ.get("KIEZ_CONFIG")
     if p:
         return Path(p).resolve()
-    orte = sorted(x for x in (WURZEL / "config").glob("*.yaml") if x.name != "richtwerte.yaml")
-    return orte[0] if len(orte) == 1 else WURZEL / "config" / "krakow.yaml"
+    orte = [x for x in sorted((WURZEL / "config").glob("*.yaml")) if _ist_ort(x)]
+    if len(orte) != 1:
+        gefunden = ", ".join(x.name for x in orte) or "keine"
+        raise SystemExit(f"Ortskonfiguration: genau eine Datei config/*.yaml mit Schlüssel ort erwartet, gefunden: "
+                         f"{gefunden} (sonst KIEZ_CONFIG setzen)")
+    return orte[0]
 
 
 @lru_cache(maxsize=None)

@@ -4,7 +4,7 @@ Name und Stadt je Sprache, Grundkarte und Luftbild samt Bildzeile, Gliederung (G
 mit Anzeige- und Lokativform je Sprache), Kartenausschnitt, Themen der Zellkarte, Zitierzeile, kanonische
 Basis-URL und Seitenliste. Die Seiten lesen nur diese Datei; ortsgebundene Werte stehen nicht im JavaScript.
 
-Quelle: $KIEZ_CONFIG oder config/krakow.yaml (skripte/ort_konfig.py). Ausgabe ist deterministisch (kein Datum,
+Quelle: $KIEZ_CONFIG oder die Ortskonfiguration unter config/ (skripte/ort_konfig.py). Ausgabe ist deterministisch (kein Datum,
 keine Uhrzeit), damit --pruefen byte-gleich vergleichen kann.
 
 Aufruf:
