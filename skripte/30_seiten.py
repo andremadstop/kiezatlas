@@ -1,6 +1,6 @@
 """Seitengenerator: erzeugt jede Seite in jeder Sprache aus vorlagen/ und texte/, damit die Fassungen synchron bleiben.
 
-Für jede Seite aus config/krakow.yaml (seiten) und jede Sprache (sprachen) entsteht eine fertige HTML-Datei:
+Für jede Seite aus der Ortskonfiguration (seiten) und jede Sprache (sprachen) entsteht eine fertige HTML-Datei:
 die Standardsprache im Wurzelordner (index.html, karta.html …), die übrigen in <lang>/ mit denselben Dateinamen.
 Die Seiten brauchen zur Laufzeit keinen Build und kein fetch (laufen per file://).
 
@@ -12,7 +12,7 @@ Eingänge
                             vendor/maplibre-gl.js daten/grundkarte.js themen.js <modul>.js)
   texte/<lang>/*.js         kurze Texte (skripte/textschicht.py liest sie)
   texte/<lang>/bloecke/<name>.html   lange Texte; fehlt ein Block, bleibt die Stelle leer (kein Platzhaltersatz)
-  daten/ort.js-Quelle       config/krakow.yaml (über skripte/ort_konfig.py)
+  daten/ort.js-Quelle       Ortskonfiguration config/<ort>.yaml (über skripte/ort_konfig.py)
 Platzhalter in Vorlagen
   {{t:schluessel}}          Text der Sprache, HTML-maskiert
   {{plural:schluessel:teile}}  Pluraltext mit n = Zahl der Stadtteile
