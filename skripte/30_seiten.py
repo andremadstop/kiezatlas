@@ -10,6 +10,10 @@ Eingänge
                             robots: (index/noindex), optional css: (weitere Stylesheets nach rahmen.css) und
                             skripte: (Module nach rahmen.js, in dieser Reihenfolge, z. B. für eine Karte
                             vendor/maplibre-gl.js daten/grundkarte.js themen.js <modul>.js)
+                            rahmen: eigen  die Vorlage ist die ganze Seite (eigener Kopf, eigene Skripte): kein
+                            _rahmen.html; ersetzt werden {{t:…}}, {{plural:…}}, {{ort:…}}, {{block:…}}, {{liste:…}}
+                            sowie {{lang}}, {{seite}}, {{wurzel}}, {{wurzel_sprache}}, sonst bleibt jedes Byte;
+                            daten:, css:, skripte: sind dann nicht erlaubt
   texte/<lang>/*.js         kurze Texte (skripte/textschicht.py liest sie)
   texte/<lang>/bloecke/<name>.html   lange Texte; fehlt ein Block, bleibt die Stelle leer (kein Platzhaltersatz)
   daten/ort.js-Quelle       Ortskonfiguration config/<ort>.yaml (über skripte/ort_konfig.py)
@@ -73,8 +77,14 @@ def vorlage_lesen(seite: str) -> tuple[dict, str]:
     for z in m.group(1).splitlines():
         k, _, v = z.partition(":")
         kopf[k.strip()] = v.split()
-    for k in ("daten", "texte", "robots", "css", "skripte"):
+    for k in ("daten", "texte", "robots", "css", "skripte", "rahmen"):
         kopf.setdefault(k, [])
+    if kopf["rahmen"] not in ([], ["eigen"]):
+        raise Fehler(f"vorlagen/{seite}.html: rahmen: nur eigen vorgesehen")
+    if kopf["rahmen"]:
+        if kopf["daten"] or kopf["css"] or kopf["skripte"]:
+            raise Fehler(f"vorlagen/{seite}.html: rahmen: eigen lädt Daten, Stile und Skripte selbst (daten:, css:, skripte: leer lassen)")
+        return kopf, t[m.end():]
     for d in kopf["css"] + kopf["skripte"]:
         if not (WURZEL / d).is_file():
             raise Fehler(f"vorlagen/{seite}.html: {d} (css:/skripte:) gibt es nicht")
@@ -211,6 +221,8 @@ class Erzeuger:
 
     def seite(self, seite: str, lang: str) -> str:
         kopf, inhalt = vorlage_lesen(seite)
+        if kopf["rahmen"]:
+            return self.eigene_seite(seite, lang, inhalt)
         w = "../" if self.ordner(lang) else ""
         k = schl(seite)
         titel = f"{self.t(lang, f'seiten.{k}.h1', roh=True)} · {sw(self.k['name'], lang)}"
@@ -276,6 +288,16 @@ class Erzeuger:
                          if any("_odbl" in d for d in kopf["daten"])
                          or re.search(r'data-feld="[a-z0-9_]*_odbl:', werte["inhalt"]) else "")
         text = self.ersetzen(self.rahmen, lang, werte)
+        if "{{" in text:
+            raise Fehler(f"{seite} ({lang}): Platzhalter übrig")
+        return text
+
+    def eigene_seite(self, seite: str, lang: str, inhalt: str) -> str:
+        """Vorlage mit rahmen: eigen: nur die Platzhalter mit Argument ersetzen, keine Rahmenwerte."""
+        w = "../" if self.ordner(lang) else ""
+        text = self.ersetzen(inhalt, lang, {"lang": lang, "seite": seite, "wurzel": w, "wurzel_sprache": ""})
+        if SPIS_MARKE in text:
+            text = text.replace(SPIS_MARKE, spis(text, seite, lang))
         if "{{" in text:
             raise Fehler(f"{seite} ({lang}): Platzhalter übrig")
         return text
